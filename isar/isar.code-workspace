@@ -1,0 +1,115 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.autoSave": "onFocusChange",
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/.gitignore":true,
+			"**/.idea":true,
+			"**/.metadata":true,			
+			"**/LICENSE":true,
+			"**/step_guides_na.iml": true,
+			"**/README.md":true,
+			"**/android":true,
+			"**/ios":true,
+			"**/linux":true,
+			"**/windows":true,
+			"**/macos":true,
+			"**/web":true,
+			"**/build":true,
+			"**/.dart_tool":true,
+			//"**/pubspec.lock":true,
+			//"**/*.g.dart":true,
+			//"**/*.mocks.dart":true,
+		},
+		"todo-tree.filtering.excludeGlobs": [
+			"**/node_modules/*/**",
+			"android",
+			"linux",
+			"windows",
+			"web"
+		],
+		"todo-tree.highlights.backgroundColourScheme": [
+			"red",
+			"orange",
+			"yellow",
+			"green",
+			"blue",
+			"indigo",
+			"violet"
+		],
+		"todo-tree.highlights.useColourScheme": true,
+		"dart.showTodos": false,
+		"dart.lineLength": 100,
+		"[dart]": {
+			"editor.rulers": [
+				100
+			],
+}
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Open Pixel4",
+				"command": "flutter emulators --launch Pixel4",
+				"type": "shell",
+				"args": [],
+				"problemMatcher": [
+					"$tsc"
+				],
+				"presentation": {
+					"reveal": "always"
+				},
+				"group": "none"
+			},
+			{
+				"label": "build watch",
+				"command": "dart run build_runner watch --delete-conflicting-outputs",
+				"type": "shell",
+				"options": {
+					"cwd": "${workspaceFolder}/isar_tod"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": false,
+					"panel": "new",
+					"showReuseMessage": true,
+					"clear": true
+				},
+				"problemMatcher": []
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Flutter windows",
+				"type": "dart",
+				"request": "launch",
+				"program": "isar_tod/lib/main.dart",
+				"deviceId": "windows",
+				"flutterMode": "debug"
+			},
+			{
+				"name": "Flutter android",
+				"type": "dart",
+				"request": "launch",
+				"program": "isar_tod/lib/main.dart",
+				"deviceId": "emulator-5554",
+				"flutterMode": "debug"
+			},
+		]
+	}
+}
