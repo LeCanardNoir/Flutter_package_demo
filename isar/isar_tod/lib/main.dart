@@ -23,7 +23,7 @@ class MainApp extends ConsumerStatefulWidget {
 
 class _MainAppState extends ConsumerState<MainApp> {
   AppUser? lastUser;
-  List<AppUser> appUserList = [];
+  //List<AppUser> appUserList = [];
   //IsarService? isarService;
   AppUserService? _appUserService;
 
@@ -39,59 +39,61 @@ class _MainAppState extends ConsumerState<MainApp> {
       _appUserService = await ref.watch(appUserServiceProvider.future);
       int id = await _appUserService!.addUser(newUser());
       lastUser = await _appUserService!.getUser(id);
-      appUserList = await _appUserService!.getAllUser();
-      appUserList = appUserList.reversed.toList();
+      //appUserList = await _appUserService!.getAllUser();
+      //appUserList = appUserList.reversed.toList();
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var userStream = ref.watch(appUsersStreamProvider);
     return MaterialApp(
       home: Scaffold(
           floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 int id = await _appUserService!.addUser(newUser());
                 lastUser = await _appUserService!.getUser(id);
-                appUserList = (await _appUserService!.getAllUser()).reversed.toList();
+                //appUserList = (await _appUserService!.getAllUser()).reversed.toList();
                 setState(() {});
               },
               child: const Icon(Icons.add)),
-          body: (_appUserService != null)
-              ? Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          //color: Colors.amber,
-                          decoration: const BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey,
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: Offset(0, 3))
-                          ], color: Colors.amber),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Text(
-                              lastUser?.name ?? "loading",
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.displayMedium,
+          body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    //color: Colors.amber,
+                    decoration: const BoxDecoration(boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey, spreadRadius: 5, blurRadius: 7, offset: Offset(0, 3))
+                    ], color: Colors.amber),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        lastUser?.name ?? "loading",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: SizedBox(
+                          width: 500,
+                          child: userStream.when(
+                            error: (error, stackTrace) => Text(error.toString()),
+                            loading: () => const Center(
+                              child: CircularProgressIndicator(),
                             ),
-                          ),
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            width: 500,
-                            child: ListView.builder(
-                              itemCount: appUserList.length,
+                            data: (data) => ListView.builder(
+                              itemCount: data.length,
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   //leading: Text(appUserList[index].id.toString()),
                                   title: Text(
-                                    appUserList[index].name,
+                                    data[index].name,
                                     textAlign: TextAlign.center,
                                   ),
                                   subtitle: Column(
@@ -99,19 +101,17 @@ class _MainAppState extends ConsumerState<MainApp> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          "${(appUserList[index].created.difference(appUserList[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
+                                          "${(data[index].created.difference(data[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text(appUserList[index].bio!)
+                                        Text(data[index].bio!)
                                       ]),
                                 );
                               },
                             ),
-                          ),
-                        )
-                      ]),
-                )
-              : const Text("Initiate")),
+                          ))),
+                ]),
+          )),
     );
   }
 }

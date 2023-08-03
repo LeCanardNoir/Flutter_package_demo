@@ -5,6 +5,7 @@ import 'package:isar_tod/src/feature/user/app_user_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../feature/user/app_user.dart';
 import '../feature/user/app_user_repo.dart';
 
 part 'app_user_pod.g.dart';
@@ -26,4 +27,10 @@ Future<AppUserService> appUserService(AppUserServiceRef ref) async {
   var provider = ref.watch(appUserRepoProvider.future);
   AppUserRepo repo = await provider;
   return AppUserService(repo: repo);
+}
+
+@riverpod
+Stream<List<AppUser>> appUsersStream(AppUsersStreamRef ref) async* {
+  AppUserService service = await ref.watch(appUserServiceProvider.future);
+  yield await service.getAllUser();
 }

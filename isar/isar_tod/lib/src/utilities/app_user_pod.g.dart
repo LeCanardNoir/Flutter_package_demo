@@ -36,5 +36,21 @@ final appUserServiceProvider =
 );
 
 typedef AppUserServiceRef = AutoDisposeFutureProviderRef<AppUserService>;
+String _$appUsersStreamHash() => r'10e9a538ec4f3b0afc1572ae1b9a16b8c24f3999';
+
+/// See also [appUsersStream].
+@ProviderFor(appUsersStream)
+final appUsersStreamProvider =
+    AutoDisposeStreamProvider<List<AppUser>>.internal(
+  appUsersStream,
+  name: r'appUsersStreamProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appUsersStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AppUsersStreamRef = AutoDisposeStreamProviderRef<List<AppUser>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
