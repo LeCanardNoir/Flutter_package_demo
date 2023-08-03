@@ -36,21 +36,12 @@ class _MainAppState extends ConsumerState<MainApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var appUserprovider = ref.read(appUserRepoPodProvider);
-      appUserprovider.when(
-        error: (error, stackTrace) => debugPrint(error.toString()),
-        data: (data) async {
-          _appUserService = AppUserService(repo: data);
-          int id = await _appUserService!.addUser(newUser());
-          lastUser = await _appUserService!.getUser(id);
-          appUserList = await _appUserService!.getAllUser();
-          appUserList = appUserList.reversed.toList();
-          setState(() {});
-        },
-        loading: () {
-          debugPrint("loding");
-        },
-      );
+      _appUserService = await ref.watch(appUserServiceProvider.future);
+      int id = await _appUserService!.addUser(newUser());
+      lastUser = await _appUserService!.getUser(id);
+      appUserList = await _appUserService!.getAllUser();
+      appUserList = appUserList.reversed.toList();
+      setState(() {});
     });
   }
 

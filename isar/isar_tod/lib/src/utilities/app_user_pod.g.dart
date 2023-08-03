@@ -6,21 +6,35 @@ part of 'app_user_pod.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appUserRepoPodHash() => r'1a794b65784abad1ad6d1c479a1754c814fe07b1';
+String _$appUserRepoHash() => r'1f3b5d0fa59691de4a579fc46acec5c68745d222';
 
-/// See also [AppUserRepoPod].
-@ProviderFor(AppUserRepoPod)
-final appUserRepoPodProvider =
-    AutoDisposeAsyncNotifierProvider<AppUserRepoPod, AppUserRepo>.internal(
-  AppUserRepoPod.new,
-  name: r'appUserRepoPodProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$appUserRepoPodHash,
+/// See also [appUserRepo].
+@ProviderFor(appUserRepo)
+final appUserRepoProvider = AutoDisposeFutureProvider<AppUserRepo>.internal(
+  appUserRepo,
+  name: r'appUserRepoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appUserRepoHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$AppUserRepoPod = AutoDisposeAsyncNotifier<AppUserRepo>;
+typedef AppUserRepoRef = AutoDisposeFutureProviderRef<AppUserRepo>;
+String _$appUserServiceHash() => r'e428d652991c4928370d86dc6bc7abdefb997b9f';
+
+/// See also [appUserService].
+@ProviderFor(appUserService)
+final appUserServiceProvider =
+    AutoDisposeFutureProvider<AppUserService>.internal(
+  appUserService,
+  name: r'appUserServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appUserServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AppUserServiceRef = AutoDisposeFutureProviderRef<AppUserService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
