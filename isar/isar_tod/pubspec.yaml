@@ -9,11 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.3.6
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   lorem_ipsum: ^0.0.3
   path_provider: ^2.0.15
   random_name_generator: ^1.1.0
+  riverpod_annotation: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -21,6 +23,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.6
+  riverpod_generator: ^2.2.4
+  custom_lint: ^0.4.0
+  riverpod_lint: ^1.4.0
 
 flutter:
   uses-material-design: true

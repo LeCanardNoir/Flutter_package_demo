@@ -1,54 +1,31 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:isar_tod/src/data_access/isar/isar_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar_tod/src/feature/user/app_user.dart';
+import 'package:isar_tod/src/utilities/app_user_pod.dart';
 import 'package:random_name_generator/random_name_generator.dart';
+
+import 'src/feature/user/app_user_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends ConsumerStatefulWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  ConsumerState<MainApp> createState() => _MainAppState();
 }
 
-class _MainAppState extends State<MainApp> {
+class _MainAppState extends ConsumerState<MainApp> {
   AppUser? lastUser;
   List<AppUser> appUserList = [];
-  // Directory? dir;
-  // Isar? isar;
-  IsarService? isarService;
-
-  // Future<void> addUser() async {
-  //   final newUser = AppUser(null, RandomNames(Zone.france).manFullName(),
-  //       DateTime.now().add(Duration(days: -365 * Random().nextInt(50))), DateTime.now(), null);
-
-  //   int? id;
-  //   await isar!.writeTxn(() async {
-  //     id = await isar!.appUserDTOs.put(AppUserDTO.fromAppUser(newUser)); // Insertion & modification
-  //   });
-
-  //   getAllUser();
-  //   lastUser = await isar!.appUserDTOs.get(id!); // Obtention
-
-  //   setState(() {});
-  //   // await isar.writeTxn(() async {
-  //   //   await isar.appUserDTOs.delete(existingUser.id!); // Suppression
-  //   // });
-  // }
-
-  // void getAllUser() async {
-  //   await isar!.txn(() async {
-  //     var list = await isar!.appUserDTOs.where().findAll();
-  //     appUserList = list.reversed.map<AppUser>((e) => e.toAppUser()).toList();
-  //   });
-  // }
+  //IsarService? isarService;
+  AppUserService? _appUserService;
 
   AppUser newUser() {
     return AppUser(null, RandomNames(Zone.france).manFullName(),
@@ -59,12 +36,21 @@ class _MainAppState extends State<MainApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      isarService = await IsarService().init(true);
-      int id = await isarService!.appUser.addUser(newUser());
-      lastUser = await isarService!.appUser.getUser(id);
-      appUserList = await isarService!.appUser.getAllUsers();
-      appUserList = appUserList.reversed.toList();
-      setState(() {});
+      var appUserprovider = ref.read(appUserRepoPodProvider);
+      appUserprovider.when(
+        error: (error, stackTrace) => debugPrint(error.toString()),
+        data: (data) async {
+          _appUserService = AppUserService(repo: data);
+          int id = await _appUserService!.addUser(newUser());
+          lastUser = await _appUserService!.getUser(id);
+          appUserList = await _appUserService!.getAllUser();
+          appUserList = appUserList.reversed.toList();
+          setState(() {});
+        },
+        loading: () {
+          debugPrint("loding");
+        },
+      );
     });
   }
 
@@ -74,13 +60,13 @@ class _MainAppState extends State<MainApp> {
       home: Scaffold(
           floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                int id = await isarService!.appUser.addUser(newUser());
-                lastUser = await isarService!.appUser.getUser(id);
-                appUserList = (await isarService!.appUser.getAllUsers()).reversed.toList();
+                int id = await _appUserService!.addUser(newUser());
+                lastUser = await _appUserService!.getUser(id);
+                appUserList = (await _appUserService!.getAllUser()).reversed.toList();
                 setState(() {});
               },
               child: const Icon(Icons.add)),
-          body: (isarService != null)
+          body: (_appUserService != null)
               ? Center(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
