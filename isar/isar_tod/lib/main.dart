@@ -39,22 +39,22 @@ class _MainAppState extends ConsumerState<MainApp> {
       _appUserService = await ref.watch(appUserServiceProvider.future);
       int id = await _appUserService!.addUser(newUser());
       lastUser = await _appUserService!.getUser(id);
-      appUserList = await _appUserService!.getAllUser();
-      appUserList = appUserList.reversed.toList();
+      // appUserList = await _appUserService!.getAllUser();
+      // appUserList = appUserList.reversed.toList();
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var users = ref.watch(appUsersStreamProvider).value!.reversed.toList();
+    var users = ref.watch(appUsersStreamProvider).value;
     return MaterialApp(
       home: Scaffold(
           floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 int id = await _appUserService!.addUser(newUser());
                 lastUser = await _appUserService!.getUser(id);
-                appUserList = (await _appUserService!.getAllUser()).reversed.toList();
+                //appUserList = (await _appUserService!.getAllUser()).reversed.toList();
                 setState(() {});
               },
               child: const Icon(Icons.add)),
@@ -77,7 +77,7 @@ class _MainAppState extends ConsumerState<MainApp> {
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
                             child: Text(
-                              lastUser?.name ?? "loading",
+                              "Last entry: ${lastUser?.name ?? "loading"}",
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.displayMedium,
                             ),
@@ -86,28 +86,33 @@ class _MainAppState extends ConsumerState<MainApp> {
                         Expanded(
                           child: SizedBox(
                             width: 500,
-                            child: ListView.builder(
-                              itemCount: users.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  //leading: Text(appUserList[index].id.toString()),
-                                  title: Text(
-                                    users[index].name,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  subtitle: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "${(users[index].created.difference(users[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
+                            child: (users != null)
+                                ? ListView.builder(
+                                    itemCount: users.length,
+                                    itemBuilder: (context, index) {
+                                      var data = users.reversed.toList();
+                                      return ListTile(
+                                        //leading: Text(appUserList[index].id.toString()),
+                                        title: Text(
+                                          data[index].name,
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text(users[index].bio!)
-                                      ]),
-                                );
-                              },
-                            ),
+                                        subtitle: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "${(data[index].created.difference(data[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Text(data[index].bio!)
+                                            ]),
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
                           ),
                         )
                       ]),

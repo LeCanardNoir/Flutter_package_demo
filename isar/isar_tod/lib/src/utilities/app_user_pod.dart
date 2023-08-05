@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:isar_tod/src/data_access/isar/app_user_dto.dart';
 import 'package:isar_tod/src/data_access/isar/app_user_repo_impl.dart';
@@ -35,11 +36,13 @@ Future<AppUserService> appUserService(AppUserServiceRef ref) async {
 Stream<List<AppUser>> appUsersStream(AppUsersStreamRef ref) {
   StreamController<List<AppUser>> sCtrl = StreamController<List<AppUser>>();
   Stream<List<AppUser>> stream = sCtrl.stream;
+  sCtrl.sink.add([]);
 
   var repoProvider = ref.watch(appUserRepoProvider.future);
   repoProvider.then((repo) {
     repo.getUsersStream().listen((_) async {
       var users = await repo.getAllUsers();
+      debugPrint("DB changed: user.len = ${users.length}");
       sCtrl.sink.add(users);
     });
   });
