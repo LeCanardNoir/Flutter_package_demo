@@ -4,4 +4,5 @@ abstract class AppUserRepo {
   Future<int> addUser(AppUser newUser);
   Future<List<AppUser>> getAllUsers();
   Future<AppUser?> getUser(int id);
+  Stream<void> getUsersStream();
 }

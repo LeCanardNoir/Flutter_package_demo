@@ -6,7 +6,7 @@ part of 'app_user_pod.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appUserRepoHash() => r'1f3b5d0fa59691de4a579fc46acec5c68745d222';
+String _$appUserRepoHash() => r'0e8d391285b6a30b8d9b7a6f71c1eafd9e863de2';
 
 /// See also [appUserRepo].
 @ProviderFor(appUserRepo)
@@ -36,5 +36,21 @@ final appUserServiceProvider =
 );
 
 typedef AppUserServiceRef = AutoDisposeFutureProviderRef<AppUserService>;
+String _$appUsersStreamHash() => r'fb7537a1d8dc42a4a165c5538422729da82127be';
+
+/// See also [appUsersStream].
+@ProviderFor(appUsersStream)
+final appUsersStreamProvider =
+    AutoDisposeStreamProvider<List<AppUser>>.internal(
+  appUsersStream,
+  name: r'appUsersStreamProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appUsersStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AppUsersStreamRef = AutoDisposeStreamProviderRef<List<AppUser>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

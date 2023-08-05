@@ -47,6 +47,7 @@ class _MainAppState extends ConsumerState<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    var users = ref.watch(appUsersStreamProvider).value!.reversed.toList();
     return MaterialApp(
       home: Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -86,12 +87,12 @@ class _MainAppState extends ConsumerState<MainApp> {
                           child: SizedBox(
                             width: 500,
                             child: ListView.builder(
-                              itemCount: appUserList.length,
+                              itemCount: users.length,
                               itemBuilder: (context, index) {
                                 return ListTile(
                                   //leading: Text(appUserList[index].id.toString()),
                                   title: Text(
-                                    appUserList[index].name,
+                                    users[index].name,
                                     textAlign: TextAlign.center,
                                   ),
                                   subtitle: Column(
@@ -99,10 +100,10 @@ class _MainAppState extends ConsumerState<MainApp> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          "${(appUserList[index].created.difference(appUserList[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
+                                          "${(users[index].created.difference(users[index].birthday).inDays / 365.2425).toStringAsFixed(0)} ans",
                                           textAlign: TextAlign.center,
                                         ),
-                                        Text(appUserList[index].bio!)
+                                        Text(users[index].bio!)
                                       ]),
                                 );
                               },

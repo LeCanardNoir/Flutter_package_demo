@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:isar/isar.dart';
 import 'package:isar_tod/src/feature/user/app_user.dart';
 
@@ -7,16 +5,15 @@ import '../../feature/user/app_user_repo.dart';
 import 'app_user_dto.dart';
 
 class AppUserRepoImpl implements AppUserRepo {
-  final Directory dir;
-  final Isar schema;
+  final Isar isar;
 
-  AppUserRepoImpl(this.dir, this.schema);
+  AppUserRepoImpl(this.isar);
 
   @override
   Future<int> addUser(AppUser newUser) async {
     int id = -1;
-    await schema.writeTxn(() async {
-      id = await schema.appUserDTOs.put(AppUserDTO.fromAppUser(newUser));
+    await isar.writeTxn(() async {
+      id = await isar.appUserDTOs.put(AppUserDTO.fromAppUser(newUser));
     });
     if (id == -1) throw IsarError("no user added");
     return id;
@@ -25,8 +22,8 @@ class AppUserRepoImpl implements AppUserRepo {
   @override
   Future<List<AppUser>> getAllUsers() async {
     List<AppUser> userList = [];
-    await schema.txn(() async {
-      List<AppUserDTO> response = await schema.appUserDTOs.where().findAll();
+    await isar.txn(() async {
+      List<AppUserDTO> response = await isar.appUserDTOs.where().findAll();
       userList = response.map((e) => e.toAppUser()).toList();
     });
     return userList;
@@ -34,8 +31,11 @@ class AppUserRepoImpl implements AppUserRepo {
 
   @override
   Future<AppUser?> getUser(int id) async {
-    AppUserDTO? dto = await schema.appUserDTOs.get(id);
+    AppUserDTO? dto = await isar.appUserDTOs.get(id);
     if (dto == null) return null;
     return dto.toAppUser();
   }
+
+  @override
+  Stream<void> getUsersStream() => isar.appUserDTOs.watchLazy();
 }
